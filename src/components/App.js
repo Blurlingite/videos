@@ -1,26 +1,36 @@
 import React from "react";
 import SearchBar from "./SearchBar";
+import VideoList from "./VideoList";
+
 // This file is a pre-configured instance of axios that we made with axios.create() and we will be able to start with data from there. Using this we can use youtube.get()
 //"youtube" b/c that is the name we gave this import
 // get() comes from axios package
 import youtube from "../apis/youtube";
 
 class App extends React.Component {
+  state = { videos: [] };
   // gets data from youtube when the SearchBar component below has a search term entered by the user and they press ENTER. We write this in the App component b/c the App component should be the one that communicates with the Youtube API
-  onTermSubmit = term => {
+  // since we are using an API request (youtube.get()) we need to use async await syntax.
+  // "async" goes on the function before the parameter list (only 1 param is there, "term")
+  // "await" goes on the API request call. We also assign it to a variable called "response" so we can make this API request using that variable
+  onTermSubmit = async term => {
     // param 1: the endpoint to be added onto baseURL from youtube.js
     // param 2: what you'll search by, the search term
-    youtube.get("/search", {
+    const response = await youtube.get("/search", {
       params: {
         q: term // see youtube.js for info on "q" which holds the search term (stands for "query"). We add the search term onto the baseURL from youtube.js right after "/search" is added from above. We don't need to restate the other params located in youtube.js b/c those are always going to be the same, that's why we put them in youtube.js and not everywhere we make calls to the Youtube API
       }
     });
+    // "response.data.items" is the list of youtube videos & data about them. We will add this to the App component's state so that we can pass it down to child components to determine how we will display them
+    this.setState({ videos: response.data.items });
   };
 
   render() {
     return (
       <div className="ui container">
         <SearchBar onFormSubmit={this.onTermSubmit} />
+        {/* We pass VideoList the list of videos we get from App's state (which gets updated when onTermSubmit runs) so it can format how we display each video */}
+        <VideoList videos={this.state.videos} />
       </div>
     );
   }
