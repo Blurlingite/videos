@@ -7,8 +7,9 @@ import VideoList from "./VideoList";
 // get() comes from axios package
 import youtube from "../apis/youtube";
 
+// selectedVideo will hold the video the user clicked on so we can update the webpage to show just that 1 video
 class App extends React.Component {
-  state = { videos: [] };
+  state = { videos: [], selectedVideo: null };
   // gets data from youtube when the SearchBar component below has a search term entered by the user and they press ENTER. We write this in the App component b/c the App component should be the one that communicates with the Youtube API
   // since we are using an API request (youtube.get()) we need to use async await syntax.
   // "async" goes on the function before the parameter list (only 1 param is there, "term")
@@ -25,12 +26,21 @@ class App extends React.Component {
     this.setState({ videos: response.data.items });
   };
 
+  // when a video is selected, we perform this code and create the param "video" so when you pass in a video to this callback function, we can use that video within this callback function
+  // We will pass onVideoSelect down to VideoList and VideoList will pass it down to VideoItem, so VideoItem will know which video to display
+  onVideoSelect = video => {
+    console.log("From the App!", video);
+  };
+
   render() {
     return (
       <div className="ui container">
         <SearchBar onFormSubmit={this.onTermSubmit} />
         {/* We pass VideoList the list of videos we get from App's state (which gets updated when onTermSubmit runs) so it can format how we display each video */}
-        <VideoList videos={this.state.videos} />
+        <VideoList
+          onVideoSelect={this.onVideoSelect}
+          videos={this.state.videos}
+        />
       </div>
     );
   }
