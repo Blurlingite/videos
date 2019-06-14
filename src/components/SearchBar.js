@@ -9,7 +9,8 @@ class SearchBar extends React.Component {
 
   onFormSubmit = event => {
     event.preventDefault();
-    // TODO make sure we call callback from parent component
+    //  call callback from parent component and pass it the "term" in this component's state so the parent (App.js) can use that term to get youtube videos from the Youtube API
+    this.props.onFormSubmit(this.state.term);
   };
 
   render() {
