@@ -1,6 +1,7 @@
 import React from "react";
 import SearchBar from "./SearchBar";
 import VideoList from "./VideoList";
+import VideoDetail from "./VideoDetail";
 
 // This file is a pre-configured instance of axios that we made with axios.create() and we will be able to start with data from there. Using this we can use youtube.get()
 //"youtube" b/c that is the name we gave this import
@@ -29,18 +30,31 @@ class App extends React.Component {
   // when a video is selected, we perform this code and create the param "video" so when you pass in a video to this callback function, we can use that video within this callback function
   // We will pass onVideoSelect down to VideoList and VideoList will pass it down to VideoItem, so VideoItem will know which video to display
   onVideoSelect = video => {
-    console.log("From the App!", video);
+    // Once onVideoSelect is called it will have the selected video so we can add that video to our App's state
+    this.setState({ selectedVideo: video });
   };
 
   render() {
     return (
       <div className="ui container">
         <SearchBar onFormSubmit={this.onTermSubmit} />
-        {/* We pass VideoList the list of videos we get from App's state (which gets updated when onTermSubmit runs) so it can format how we display each video */}
-        <VideoList
-          onVideoSelect={this.onVideoSelect}
-          videos={this.state.videos}
-        />
+
+        <div className="ui grid">
+          {/* ui row will make VideoDetail and VideoList appear on the same row */}
+          <div className="ui row">
+            {/* eleven wide column will make VideoDetail use up 11/16 colums */}
+            <div className="eleven wide column">
+              <VideoDetail video={this.state.selectedVideo} />
+            </div>
+            {/* We pass VideoList the list of videos we get from App's state (which gets updated when onTermSubmit runs) so it can format how we display each video */}
+            <div className="five wide column">
+              <VideoList
+                onVideoSelect={this.onVideoSelect}
+                videos={this.state.videos}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -8,7 +8,13 @@ const VideoList = ({ videos, onVideoSelect }) => {
   // map over videos array that came in as a prop
   const renderedList = videos.map(video => {
     // pass VideoItem the current video we are on in the array as a prop called "video"
-    return <VideoItem onVideoSelect={onVideoSelect} video={video} />;
+    return (
+      <VideoItem
+        key={video.id.videoId}
+        onVideoSelect={onVideoSelect}
+        video={video}
+      />
+    );
   });
   return <div className="ui relaxed divided list">{renderedList}</div>;
 };
