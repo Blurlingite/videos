@@ -11,6 +11,13 @@ import youtube from "../apis/youtube";
 // selectedVideo will hold the video the user clicked on so we can update the webpage to show just that 1 video
 class App extends React.Component {
   state = { videos: [], selectedVideo: null };
+
+  // this will run at the beginning when the application first loads so that there is a default search term available so we don't see the "Loading..." message when there is no input
+  componentDidMount() {
+    // componentDidMount will call onTermSubmit() so we can have a default search term
+    this.onTermSubmit("Viridi");
+  }
+
   // gets data from youtube when the SearchBar component below has a search term entered by the user and they press ENTER. We write this in the App component b/c the App component should be the one that communicates with the Youtube API
   // since we are using an API request (youtube.get()) we need to use async await syntax.
   // "async" goes on the function before the parameter list (only 1 param is there, "term")
@@ -24,7 +31,11 @@ class App extends React.Component {
       }
     });
     // "response.data.items" is the list of youtube videos & data about them. We will add this to the App component's state so that we can pass it down to child components to determine how we will display them
-    this.setState({ videos: response.data.items });
+    this.setState({
+      videos: response.data.items,
+      // take the 1st video (at index 0) and make that the selected video so we have a video to show at the start. If we don't do this, only the list of videos at the side will show which looks ugly. So now when the user searches for something, the first video will be displayed on the right and the list of the other videos will be on the left
+      selectedVideo: response.data.items[0]
+    });
   };
 
   // when a video is selected, we perform this code and create the param "video" so when you pass in a video to this callback function, we can use that video within this callback function
